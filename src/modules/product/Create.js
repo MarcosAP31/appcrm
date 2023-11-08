@@ -182,7 +182,6 @@ function Create() {
             {selectedImage && (
               <img src={selectedImage} alt="Preview" style={{ maxWidth: '100px' }} />
             )}
-            <button onClick={handleImageUpload}>Subir imagen</button>
           </div>
           <div className="btn-group" role="group" aria-label="Button group name">
             <button type="submit" className="btn btn-success">Agregar nuevo producto</button>

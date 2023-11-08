@@ -23,11 +23,15 @@ function Edit() {
       setSupplierId(value);
     }
   }
+
   const handleSelectChange = (e) => {
     const selectedValue = e.target.value;
     setSelectedSupplier(selectedValue);
-    // Si deseas asignar el valor de selectedSupplier a SupplierId, puedes hacerlo aquí
-    setSupplierId(selectedValue);
+    // Actualiza SupplierId solo si se ha seleccionado algo
+    if (selectedValue) {
+      setSupplierId(selectedValue);
+    }
+
   };
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -111,7 +115,7 @@ function Edit() {
       const productResponse = await fetch(Api + '/product/' + ProductId);
       const productData = await productResponse.json();
       const imageName = productData.Image;
-      setImage(imageName);
+      setImage(imageName);setSupplierId(productData.SupplierId)
       // Verifica si se ha seleccionado una nueva imagen
       if (File) {
         // Elimina la imagen existente solo si se ha seleccionado una nueva
@@ -128,7 +132,7 @@ function Edit() {
 
       // Resto del código para actualizar el registro
 
-      const dataSend = { ProductId, Description, Category, Amount, PurchasePrice, SalePrice, SupplierId, Image };
+      const dataSend = { ProductId, Description, Category, Amount, PurchasePrice, SalePrice, SupplierId:SupplierId||product.SupplierId, Image:Image|| product.Image };
 
       // Realizar la solicitud PUT o PATCH a la API para actualizar el registro
       const updateResponse = await fetch(Api + '/product/' + ProductId, {
@@ -185,6 +189,8 @@ function Edit() {
         setProduct(data);
         // Asignar el valor de SupplierId a selectedSupplier
         setSelectedSupplier(data.SupplierId);
+        // Actualizar el estado de la imagen
+        setSelectedImage('http://localhost:3000/build/uploads/img/' + data.Image);
       })
       .catch((error) => {
         console.error('Error al obtener el registro:', error);
@@ -214,26 +220,26 @@ function Edit() {
             </div>
             <div className="form-group">
               <label htmlFor="Category" className="form-label">Categoria:</label>
-              <input type="text" name="Category" value={product.Category} onChange={valueChange} id="Category" className="form-control" placeholder="" aria-describedby="helpId" />
+              <input required type="text" name="Category" value={product.Category} onChange={valueChange} id="Category" className="form-control" placeholder="" aria-describedby="helpId" />
               <small id="helpId" className="text-muted">Categoría</small>
             </div>
             <div className="form-group">
               <label htmlFor="Amount" className="form-label">Cantidad:</label>
-              <input type="text" name="Amount" onChange={valueChange} value={product.Amount} id="Amount" className="form-control" placeholder="" aria-describedby="helpId" />
+              <input required type="text" name="Amount" onChange={valueChange} value={product.Amount} id="Amount" className="form-control" placeholder="" aria-describedby="helpId" />
               <small id="helpId" className="text-muted">Cantidad</small>
             </div>
             <div className="form-group">
               <label htmlFor="PurchasePrice" className="form-label">Precio de Compra:</label>
-              <input type="text" name="PurchasePrice" value={product.PurchasePrice} onChange={valueChange} id="PurchasePrice" className="form-control" placeholder="" aria-describedby="helpId" />
+              <input required type="text" name="PurchasePrice" value={product.PurchasePrice} onChange={valueChange} id="PurchasePrice" className="form-control" placeholder="" aria-describedby="helpId" />
               <small id="helpId" className="text-muted">Precio de Compra</small>
             </div>
             <div className="form-group">
               <label htmlFor="SalePrice" className="form-label">Precio de Venta:</label>
-              <input type="text" name="SalePrice" onChange={valueChange} value={product.SalePrice} id="SalePrice" className="form-control" placeholder="" aria-describedby="helpId" />
+              <input required type="text" name="SalePrice" onChange={valueChange} value={product.SalePrice} id="SalePrice" className="form-control" placeholder="" aria-describedby="helpId" />
               <small id="helpId" className="text-muted">Precio de Venta</small>
             </div>
             <div className="form-group">
-              <select value={selectedSupplier} onChange={handleSelectChange}>
+              <select required value={selectedSupplier} onChange={handleSelectChange}>
                 <option value="">Selecciona una opción</option>
                 {suppliers.map((supplier) => (
                   <option key={supplier.SupplierId} value={supplier.SupplierId}>
