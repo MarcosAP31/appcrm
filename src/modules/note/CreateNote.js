@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Api from "../../services/api";
-import './css/CreateActivity.css'; // Import your CSS file for styling
+import './css/CreateNote.css'; // Import your CSS file for styling
 const Create = ({ isOpen, onClose, onFormSubmit }) => {
   const [ContactId, setContactId] = useState('');
   const [AccountId, setAccountId] = useState('');
   const [OpportunityId, setOpportunityId] = useState('');
-  const [Type, setType] = useState('');
+  const [UserId, setUserId] = useState('');
   const [DateTime, setDateTime] = useState('');
-  const [Duration, setDuration] = useState('');
+  const [Content, setContent] = useState('');
   const [Description, setDescription] = useState('');
   const [mistakes, setMistakes] = useState([]);
   const valueChange = (e) => {
@@ -19,15 +19,13 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
       setAccountId(value);
     } else if (name === 'OpportunityId') {
       setOpportunityId(value);
-    } else if (name === 'Type') {
-      setType(value);
+    } else if (name === 'UserId') {
+      setUserId(value);
     } else if (name === 'DateTime') {
       setDateTime(value);
-    } else if (name === 'Duration') {
-        setDuration(value);
-    } else if (name === 'Description') {
-      setDescription(value);
-    }
+    } else if (name === 'Content') {
+        setContent(value);
+    } 
     setMistakes([]);
   }
   const checkError = (element) => {
@@ -37,10 +35,9 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
     setContactId('');
     setAccountId('');
     setOpportunityId('');
-    setType('');
+    setUserId('');
     setDateTime('');
-    setDuration('');
-    setDescription('');
+    setContent('');
     setMistakes([]);
     
   };
@@ -54,16 +51,16 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
     if (!ContactId) mistakes.push("error_ContactId");
     if (!AccountId) mistakes.push("error_AccountId");
     if (!OpportunityId) mistakes.push("error_OpportunityId");
-    if (!Type) mistakes.push("error_Type");
+    if (!UserId) mistakes.push("error_UserId");
     if (!DateTime) mistakes.push("error_DateTime");
-    if (!Duration) mistakes.push("error_Duration");
+    if (!Content) mistakes.push("error_Content");
     if (!Description) mistakes.push("error_Description");
     setMistakes(mistakes);
     if (mistakes.length > 0) return false;
-    const dataSend = { ContactId, AccountId, OpportunityId, Type, DateTime, Duration, Description };
+    const dataSend = { ContactId, AccountId, OpportunityId, UserId, DateTime, Content, Description };
     try {
       // Realizar la solicitud POST a la API para insertar un nuevo registro
-      const listResponse = await fetch(Api + '/activities', {
+      const noteResponse = await fetch(Api + '/notes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,8 +69,8 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
         body: JSON.stringify(dataSend),
       });
 
-      if (!listResponse.ok) {
-        throw new Error('No se pudo insertar el registro');
+      if (!noteResponse.ok) {
+        throw new Error('Could not insert record');
       }
       onFormSubmit(); // Llamamos a la función onFormSubmit para indicar éxito y realizar acciones adicionales
       onClose();
@@ -81,7 +78,7 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
       // Aquí puedes realizar cualquier acción adicional, como actualizar la lista de registros.
       // Si deseas refrescar la lista de registros después de la inserción, puedes hacer otra solicitud GET.
     } catch (error) {
-      console.error('Error al insertar el registro:', error);
+      console.error('Error inserting record:', error);
       // Puedes manejar el error de acuerdo a tus necesidades (por ejemplo, mostrar un mensaje de error).
     }
   }
@@ -92,7 +89,7 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
         <div className="modal-overlay" onClick={onClose}></div>
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Activities</h5>
+            <h5 className="modal-title">Notes</h5>
             <button type="button" className="close" onClick={onClose}>
               <span>&times;</span>
             </button>
@@ -115,9 +112,9 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
                 <small id="helpId" className="invalid-feedback">OpportunityId</small>
               </div>
               <div className="form-group">
-                <label htmlFor="Type" className="form-label">Type:</label>
-                <input type="text" name="Type" value={Type} onChange={valueChange} id="Type" className={((checkError("error_Type")) ? "is-invalid" : "") + " form-control"} placeholder="Type" aria-describedby="helpId" />
-                <small id="helpId" className="invalid-feedback ">Type</small>
+                <label htmlFor="UserId" className="form-label">UserId:</label>
+                <input type="text" name="UserId" value={UserId} onChange={valueChange} id="UserId" className={((checkError("error_UserId")) ? "is-invalid" : "") + " form-control"} placeholder="UserId" aria-describedby="helpId" />
+                <small id="helpId" className="invalid-feedback ">UserId</small>
               </div>
               <div className="form-group">
                 <label htmlFor="DateTime" className="form-label">DateTime:</label>
@@ -125,17 +122,12 @@ const Create = ({ isOpen, onClose, onFormSubmit }) => {
                 <small id="helpId" className="invalid-feedback">DateTime</small>
               </div>
               <div className="form-group">
-                <label htmlFor="DateTime" className="form-label">Duration:</label>
-                <input type="text" name="DateTime" onChange={valueChange} value={DateTime} id="Duration" className={((checkError("error_Duration")) ? "is-invalid" : "") + " form-control"} placeholder="DateTime" aria-describedby="helpId" />
-                <small id="helpId" className="invalid-feedback">Duration</small>
-              </div>
-              <div className="form-group">
-                <label htmlFor="Description" className="form-label">Description:</label>
-                <input type="text" name="Description" onChange={valueChange} value={Description} id="Description" className={((checkError("error_Description")) ? "is-invalid" : "") + " form-control"} placeholder="Description" aria-describedby="helpId" />
-                <small id="helpId" className="invalid-feedback">Description</small>
+                <label htmlFor="Content" className="form-label">Content:</label>
+                <input type="text" name="Content" onChange={valueChange} value={Content} id="Content" className={((checkError("error_Content")) ? "is-invalid" : "") + " form-control"} placeholder="Content" aria-describedby="helpId" />
+                <small id="helpId" className="invalid-feedback">Content</small>
               </div>
               <div className="btn-group" role="group" aria-label="Button group name">
-                <button type="submit" className="btn btn-success">Add new Activity</button>
+                <button type="submit" className="btn btn-success">Add new Note</button>
                 <button type="button" className="btn btn-primary" onClick={onClose}>Cancel</button>
               </div>
             </form>
